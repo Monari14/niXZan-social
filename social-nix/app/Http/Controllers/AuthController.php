@@ -35,6 +35,28 @@ class AuthController extends Controller
 
         return view('auth.login');
     }
+
+    public function cadastro(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $request->validate([
+                'username' => 'required|unique:users,username',
+                'email'    => 'required|email|unique:users,email',
+                'senha'    => 'required|min:6',
+            ]);
+
+            DB::table('users')->insert([
+                'username' => $request->input('username'),
+                'email'    => $request->input('email'),
+                'senha'    => Hash::make($request->input('senha')),
+            ]);
+
+            return redirect()->route('');
+        }
+
+        return view('auth.cadastro');
+    }
+
     public function dashboard()
     {
         // Verificar se o usuário está autenticado
@@ -45,9 +67,8 @@ class AuthController extends Controller
         // Obter o usuário usando DB
         $user = DB::table('users')->where('id', session('user_id'))->first();
 
-        // Verificar se o usuário foi encontrado
         if (!$user) {
-            return redirect()->route('login');
+            return redirect()->route('/');
         }
 
         return view('dashboard.dash', compact('user'));
@@ -55,10 +76,8 @@ class AuthController extends Controller
 
     public function logout()
     {
-        // Remove as variáveis de sessão
         Session::flush();
 
-        // Redireciona para a página de login
-        return redirect()->route('login');
+        return redirect()->route('');
     }
 }
