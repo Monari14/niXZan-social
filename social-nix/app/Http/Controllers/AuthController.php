@@ -28,7 +28,6 @@ class AuthController extends Controller
             if ($user && Hash::check($senha, $user->senha)) {
                 Session::put('user_id', $user->id);
                 return redirect()->route('dashboard');
-                echo 'logou';
             } else {
                 return redirect()->route('login')->withErrors(['login' => 'E-mail ou senha incorretos!']);
             }
