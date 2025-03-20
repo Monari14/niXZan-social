@@ -68,7 +68,7 @@ class AuthController extends Controller
         $user = DB::table('users')->where('id', session('user_id'))->first();
 
         if (!$user) {
-            return redirect()->route('/');
+            return redirect()->route('login');
         }
 
         return view('dashboard.dash', compact('user'));
